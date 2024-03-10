@@ -1,0 +1,60 @@
+main_menu(), difficulty_menu(), and play() functions are game loops that repeat 30 times/second.  They never run concurrently.
+
+button.py
+Creates Button class
+update() method blits (copies and pastes) one surface on to another.  e.g. screen1.blit(surface1, rect1) = surface1 is blitted onto screen at the location of rect1
+check_for_click() checks if the mouse position collides with the button. This has nothing to do with clicking. We are ONLY checking if the two things collide.
+
+main_menu()
+Creates the first screen you see.
+Contains 2 buttons, start and difficulty.
+If start_button is clicked:
+	1. main_menu() stops running
+	2. play() begins running
+	3. FYI - every time the main_menu() game loop is run (30 times/second), we look for MOUSEBUTTONDOWN.  if mouse button is clicked AND check_for_click() method of start_button is TRUE, then run play() function
+If difficulty_button is clicked: 
+	1. main_menu() stops running
+	2. difficulty_menu() begins running
+	3. FYI - every time the main_menu() game loop is run (30 times/second), we look for MOUSEBUTTONDOWN.  if mouse button is clicked AND check_for_click() method of difficulty_button is TRUE, then run difficulty_menu() function
+
+difficulty_menu()
+Creates another screen.
+Contains 4 buttons, each representing a level of difficulty.
+For each button clicked: 
+	1. Instance (difficulty_data (created in main.py)) of Difficulty class is updated via update_difficulty method
+	2. difficulty_menu() stops running
+	3. main_menu() begins running
+	4. FYI - essentially the same as what is described in the main_menu section above
+
+main.py
+Basic game setup
+Creates sprite groups, player_group and box_group, for Player and Box classes, respectively.
+We are ALWAYS checking for collision between these two groups. Player probably could've been just a sprite object instead of a group, because there will always be ONLY 1 player.  I might fix that later.
+
+player.py
+Creates Player class
+Visible in the play() function as a small black square.
+update() method gets the current mouse position and relocates the black square accordingly
+
+boxes.py
+Creates Box class
+Takes color_dict (created in colors.py) as argument and randrange function is used to determine what color the box will be
+Boxes fall at a speed, which is obtained from difficulty_data. The speed is the number of pixels that the box moves every time the play() game loop is run.
+The update() method adjusts the location of the box
+
+main.py
+target_rectangle is created and will be drawn to the screen inside the play() function.
+difficulty_data is created.
+Create a timer based on difficulty_data 'target_color_duration'.  This is the length of time the target_rectangle will retain it's color before switching to a new color. The colors are selected randomly so it is possible for one color to be selected multiple times in a row.
+player_score and time_last_color are initiated
+
+play()
+Updates time_since_start every loop. This is the number of milliseconds that have passed since the beginning of the when play() begins running.
+Check for last time a box spawned, then spawn new boxes
+Move boxes and player on screen
+Check for collissions and adjust player_score
+Draw player_score_surface and target_rectangle on screen.
+
+
+
+
