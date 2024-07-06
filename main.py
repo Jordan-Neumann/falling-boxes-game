@@ -31,6 +31,7 @@ target_color_border = (0,0,0)
 
 # Create font
 f = pygame.font.Font(size = 72)
+f2 = pygame.font.Font(size = 50)
 
 # Create buttons for main_menu() function
 start_button = Button('Start', f, (0,0,0), (WIDTH//2, HEIGHT//3))
@@ -42,6 +43,10 @@ medium_button = Button('Medium', f, (0,0,0), (WIDTH//2, HEIGHT//5 * 2))
 hard_button = Button('Hard', f, (0,0,0), (WIDTH//2, HEIGHT//5 * 3))
 nightmare_button = Button('Nightmare', f, (0,0,0), (WIDTH//2, HEIGHT//5 * 4))
 
+# Create buttons for game_over_menu() function
+main_menu_button = Button('Main Menu', f, (0,0,0), (WIDTH//5 * 1, HEIGHT//5 * 4))
+play_again_button = Button('Play Again', f, (0,0,0), (WIDTH//5 * 4, HEIGHT//5 * 4))
+
 # Get difficulty data
 difficulty_data = Difficulty(my_dict = difficulty_dict, level = 'easy')
 
@@ -49,6 +54,7 @@ difficulty_data = Difficulty(my_dict = difficulty_dict, level = 'easy')
 CHANGECOLOR = pygame.event.custom_type()
 pygame.time.set_timer(CHANGECOLOR, difficulty_data.subset_dict['target_color_duration'])
 
+lives = 3
 player_score = 0
 time_last_color = 0
 
@@ -118,6 +124,7 @@ def play(difficulty_data):
     global time_since_start
     global target_color
     global player_score
+    global lives
 
     pygame.mouse.set_visible(False)
 
@@ -157,7 +164,12 @@ def play(difficulty_data):
                     player_score += difficulty_data.subset_dict['score_increase']
                 else:
                     player_score -= difficulty_data.subset_dict['score_decrease']
-                    
+                    lives -= 1
+                    if lives == 0:
+                        box_group.empty()
+                        game_over_menu()
+
+
         # Turn player score into a string and blit to screen. Do this towards the end so that boxes are not shown in front of the player_score_suface.
         player_score_str = str(player_score) 
         player_score_surface = f.render(player_score_str, 'AA', (0, 0, 0))
@@ -167,6 +179,47 @@ def play(difficulty_data):
         pygame.draw.rect(screen, target_color_border, target_rectangle_border)
         pygame.draw.rect(screen, target_color, target_rectangle)
 
+        pygame.display.flip()
+        clock.tick(30)
+
+def game_over_menu():
+
+    global player_score
+    global lives
+
+    pygame.mouse.set_visible(True)
+    while True:
+
+        pos = pygame.mouse.get_pos()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if main_menu_button.check_for_click(pos):
+                    lives = 3
+                    player_score = 0
+                    main_menu(difficulty_data)
+                if play_again_button.check_for_click(pos):
+                    lives = 3
+                    player_score = 0
+                    play(difficulty_data)
+
+
+        screen.fill((221, 221, 221))
+        # Turn player score into a string and blit to screen. Do this towards the end so that boxes are not shown in front of the player_score_suface.
+        player_score_str = "Game over.  Your score is " + str(player_score) + "."
+        player_score_surface = f2.render(player_score_str, 'AA', (0, 0, 0))
+        text_width, text_height = player_score_surface.get_size()
+        x_position = (WIDTH - text_width) // 2
+        y_position = (HEIGHT - text_height) // 2
+        screen.blit(player_score_surface, (x_position, y_position))
+
+        main_menu_button.update(screen)
+        play_again_button.update(screen)
+        
         pygame.display.flip()
         clock.tick(30)
         
