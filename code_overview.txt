@@ -1,8 +1,8 @@
-main_menu(), difficulty_menu(), and play() functions are game loops that repeat 30 times/second.  They never run concurrently.
+main_menu(), difficulty_menu(), play(), and game_over_menu() functions are game loops that repeat 30 times/second.  They never run concurrently.
 
 button.py
 Creates Button class
-update() method blits (copies and pastes) one surface on to another.  e.g. screen1.blit(surface1, rect1) = surface1 is blitted onto screen at the location of rect1
+update() method blits (copies and pastes) one surface on to another.  e.g. screen1.blit(surface1, rect1) = surface1 is blitted onto screen1 at the location of rect1
 check_for_click() checks if the mouse position collides with the button. This has nothing to do with clicking. We are ONLY checking if the two things collide.
 
 main_menu()
@@ -54,6 +54,10 @@ Check for last time a box spawned, then spawn new boxes
 Move boxes and player on screen
 Check for collissions and adjust player_score
 Draw player_score_surface and target_rectangle on screen.
+
+game_over_menu()
+Displays player score
+Contains two buttons, Main Menu and Play Again.
 
 
 
